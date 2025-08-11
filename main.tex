@@ -569,14 +569,80 @@ Alle weiteren Rechnungen und Analysen finden in der Versuchsasuwertung statt.
 
 \newpage
 
+\fi
+
 \section{Auswertung}
 
-\subsection{Teilversuch 1: Bragg-Reflexion von Röntgenstrahlung des Molybdän an einem NaCl-Eiskristall}
+\subsection{Teilversuch 1: Paschen-Kurve}
+
+Für die Paschen-Kurve wird nach der Theorie ein Verlauf der Form
+\[
+    U \wideeq \frac{Bpd}{\ln(Apd) - \ln(\ln(1 / \gamma + 1))}
+\]
+erwartet. Daher wurden and die gemessenen Werte die Funktion
+\[
+    f(x) \wideeq \frac{A x}{\ln(B x) - C}
+\]
+mit Parametern $A$, $B$ und $C$ gefittet.
+Die Fitfunktion ist in Abbildung [Nr] zu sehen. Die $x$-Koordinaten der Punkte
+ergeben sich aus dem Produkt aus gemessenem Druck und eingestelltem Elektrodenabstand.
+
+[Abbildung] \coderef{tv1}
+
+Die Werte der Fitparameter inkl. Unsicherheit sind in Tabelle \ref{fitparameters_tv1}
+dargestellt.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c||c|c}
+         Parameter & Wert & Unsicherheit  \\
+         \hline
+         $A$ & & \\
+         $B$ & & \\
+         $C$ & & \\
+    \end{tabular}
+    \caption{\coderef{tv1}}
+    \label{fitparameters_tv1}
+\end{table}
+
+Die Funktion $f$ hat die Ableitung
+\[
+    f'(x) \wideeq \frac{
+        A (\ln(B x) - C) - A x \frac{1}{B x} \cdot B
+    }{
+        \left( \ln(B x) - C \right)^2
+    }
+    \wideeq A \frac{\ln (B x) - C - 1}{\left( \ln(B x) - C \right)^2}
+\]
+Setzt man diese gleich Null, so erhält man für die $x$-Koordinate des Minimums
+\begin{align*}
+    A \frac{\ln (B x) - C - 1}{\left( \ln(B x) - C \right)^2} \wideeq& 0 \\
+    \ln (B x) \wideeq& C + 1 \\
+    x_0 \wideeq& \frac 1 B e^{C + 1}
+\end{align*}
+Daraus ergibt sich für die $y$-Koordinate des Minimums
+\begin{align*}
+    f(x_0) \wideeq \frac{A / B e^{C + 1}}{\ln (e^{C + 1}) - C}
+    \wideeq \frac A B e^{C + 1}
+\end{align*}
+Mit diesem Ausdruck kann die minimale Zündspannung (das Paschen-Minimum) berechnet
+werden. Für unsere Fitparameter ergibt sich ein Wert von
+\[
+    U_\text{min} \wideeq % ...
+    \quad \coderef{tv1}
+\]
 
 
 \newpage
 
-\fi
+\subsection{Teilversuch 2: Oberflächenbehandlung}
+
+
+\newpage
+
+\subsection{Teilversuch 3: Plasmakugel}
+
+
+\newpage
 
 \section{Anmerkung: Graphische Auswertung und Fehlerfortpflanzung mit Python-Code}
 
@@ -587,7 +653,7 @@ sind entsprechend mit einem \colorbox{codebg}{blauen Hintergrund} gekennzeichnet
 s. folgendes Beispiel:
 \[
     F \wideeq ma \wideeq \qty{20}{\kg} \cdot \qty{9.81}{\meter\per\square\second}
-    \wideeq (\num{19.6} \pm \num{0,5}) \unit{\N} \widespace \coderef{tv1}
+    \wideeq (\num{19.6} \pm \num{0,5}) \unit{\N} \quad \coderef{tv1}
 \]
 Das bedeutet, dass die Berechnung des Wertes und der Unsicherheit von der
 Python-Funktion namens \verb|tv1| durchgeführt wird.
