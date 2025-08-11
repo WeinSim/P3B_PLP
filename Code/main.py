@@ -6,7 +6,7 @@ from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
-# from Expressions import *
+from expressions import *
 
 # markers - linestyle - color
 
@@ -51,15 +51,23 @@ def tv1():
     dp = [d_i * p_i for (d_i, p_i) in zip(d, p)]
 
     # fit paschen-curve to data
-    default_params = (600, 8, 0.2)
+    default_params = (8, 600, 0.2)
     params, cov = curve_fit(paschen, dp, u, default_params)
+    uncertainties = np.sqrt(np.diag(cov))
     # params = default_params
     print("Fitparameter (A, B, C):")
-    print(params)
+    print("Werte:          " + "".join(f"{p:10.4g}" for p in params))
+    print("Unsicherheiten: " + "".join(f"{u:10.4g}" for u in uncertainties))
 
     (A, B, C) = params
-    u_min = A / B * np.exp(C + 1)
+    A_var = Var(A, uncertainties[0], "A")
+    B_var = Var(B, uncertainties[1], "B")
+    C_var = Var(C, uncertainties[2], "C")
+    u_min_expr = Mult(Div(B_var, A_var), Exp(Add(C_var, Const(1))))
+    u_min = u_min_expr.eval()
+    d_u_min = gaussian(u_min_expr, [A_var, B_var, C_var])
     print(f"U_min = {u_min}")
+    print(f"\u0394U_min = {d_u_min}")
 
     dprange = np.linspace(min(dp), max(dp), 100)
     fit = paschen(dprange, A, B, C)
@@ -80,7 +88,7 @@ def tv1():
     pp.close()
 
 def paschen(x, A, B, C):
-    return A * x / (np.log(B * x) - C)
+    return B * x / (np.log(A * x) - C)
 
 # vorbereitung()
 tv1()

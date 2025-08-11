@@ -581,29 +581,39 @@ Für die Paschen-Kurve wird nach der Theorie ein Verlauf der Form
 \]
 erwartet. Daher wurden and die gemessenen Werte die Funktion
 \[
-    f(x) \wideeq \frac{A x}{\ln(B x) - C}
+    f(x) \wideeq \frac{B x}{\ln(A x) - C}
 \]
 mit Parametern $A$, $B$ und $C$ gefittet.
-Die Fitfunktion ist in Abbildung [Nr] zu sehen. Die $x$-Koordinaten der Punkte
-ergeben sich aus dem Produkt aus gemessenem Druck und eingestelltem Elektrodenabstand.
+$A$ und $B$ in der Fitfunktion entsprechen den Parametern $A$ und $B$ in der
+Gleichung für die Spannung. Zwischen $\gamma$ und $C$ gilt der Zusammenhang
+$C = \ln(\ln(1 / \gamma + 1))$ bzw. $\gamma = 1 / (\exp(\exp(C)) - 1)$.
+Die Fitfunktion ist in \ref{graph_tv1} zu sehen. Die $x$-Koordinaten der Punkte
+ergeben sich aus dem Produkt aus gemessenem Druck und
+eingestelltem Elektrodenabstand.
+Die Werte der Fitparameter sowie deren Unsicherheiten sind in
+\ref{fitparameters_tv1} dargestellt.
 
-[Abbildung] \coderef{tv1}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{Abbildungen/Graph_TV1.pdf}
+    \caption{Fit der Paschen-Kurve an die gemessenen Werte (\coderef{tv1})}
+    \label{graph_tv1}
+\end{figure}
 
-Die Werte der Fitparameter inkl. Unsicherheit sind in Tabelle \ref{fitparameters_tv1}
-dargestellt.
 \begin{table}[H]
     \centering
     \begin{tabular}{c||c|c}
          Parameter & Wert & Unsicherheit  \\
          \hline
-         $A$ & & \\
-         $B$ & & \\
-         $C$ & & \\
+         $A$ & \num{5e2} & \num{4e2} \\
+         $B$ & \num{0} & \num{4e7} \\
+         $C$ & \num{0} & \num{5e6} \\
     \end{tabular}
     \caption{\coderef{tv1}}
     \label{fitparameters_tv1}
 \end{table}
 
+% TODO continue: A und B vertauschen
 Die Funktion $f$ hat die Ableitung
 \[
     f'(x) \wideeq \frac{
@@ -627,7 +637,8 @@ Daraus ergibt sich für die $y$-Koordinate des Minimums
 Mit diesem Ausdruck kann die minimale Zündspannung (das Paschen-Minimum) berechnet
 werden. Für unsere Fitparameter ergibt sich ein Wert von
 \[
-    U_\text{min} \wideeq % ...
+    U_\text{min} \wideeq \frac A B e^{C + 1} \wideeq
+    \qty{0 \pm 1.9e9}{\volt}
     \quad \coderef{tv1}
 \]
 
