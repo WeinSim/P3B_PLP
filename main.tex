@@ -18,7 +18,7 @@
 \usepackage{graphicx}
 \usepackage{amssymb}
 \usepackage{float}
-\usepackage{siunitx} \sisetup{locale = DE}
+\usepackage{siunitx} \sisetup{locale = DE, uncertainty-mode = separate}
 \usepackage{pdfpages}
 \usepackage{multirow}
 \usepackage[
@@ -52,9 +52,6 @@
 \newcommand{\wideimplies}{\widespace \implies \widespace}
 \newcommand{\pd}[2]{
     \frac{\partial #1}{\partial #2}
-}
-\newcommand{\result}[2]{
-    #1 \, \text{#2}
 }
 
 % Markieren von verwendetem Code
@@ -554,7 +551,6 @@ werden, was mathematisch nicht korrekt ist.
 
 \newpage
 
-\iffalse
 
 \section{Versuchsprotokoll}
 
@@ -565,11 +561,9 @@ wurde sie klar gekennzeichnet.
 Messunsicherheiten wurden angegeben und folgend in der Auswertung verwendet.
 Alle weiteren Rechnungen und Analysen finden in der Versuchsasuwertung statt.
 
-\includepdf[pages={...}, pagecommand={\thispagestyle{scrheadings}}, frame=true]{[Name.pdf]]}
+\includepdf[pages={1-6}, pagecommand={\thispagestyle{scrheadings}}, frame=true]{Protokoll.pdf}
 
 \newpage
-
-\fi
 
 \section{Auswertung}
 
@@ -579,78 +573,248 @@ Für die Paschen-Kurve wird nach der Theorie ein Verlauf der Form
 \[
     U \wideeq \frac{Bpd}{\ln(Apd) - \ln(\ln(1 / \gamma + 1))}
 \]
-erwartet. Daher wurden and die gemessenen Werte die Funktion
+erwartet. Daher haben wir zunächst versucht, die gemessenen Werte an die Funktion
 \[
-    f(x) \wideeq \frac{B x}{\ln(A x) - C}
+    f_\text{Paschen}(x) \wideeq \frac{B x}{\ln(A x) - C}
 \]
-mit Parametern $A$, $B$ und $C$ gefittet.
-$A$ und $B$ in der Fitfunktion entsprechen den Parametern $A$ und $B$ in der
-Gleichung für die Spannung. Zwischen $\gamma$ und $C$ gilt der Zusammenhang
-$C = \ln(\ln(1 / \gamma + 1))$ bzw. $\gamma = 1 / (\exp(\exp(C)) - 1)$.
-Die Fitfunktion ist in \ref{graph_tv1} zu sehen. Die $x$-Koordinaten der Punkte
-ergeben sich aus dem Produkt aus gemessenem Druck und
-eingestelltem Elektrodenabstand.
-Die Werte der Fitparameter sowie deren Unsicherheiten sind in
-\ref{fitparameters_tv1} dargestellt.
+zu fitten, mit Parametern $A$, $B$ wie in der Gleichung für die Spannung
+nd $C = \ln(\ln(1 / \gamma + 1))$ bzw. $\gamma = 1 / (\exp(\exp(C)) - 1)$.
+Die $x$-Koordinaten der Punkte ergeben sich aus dem Produkt aus
+gemessenem Druck und eingestelltem Elektrodenabstand.
+
+Wählt man als Startwerte für die Parameter $A = B = C = 1$, so ergibt sich folgender
+Fit:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{Abbildungen/Graph_TV1.pdf}
-    \caption{Fit der Paschen-Kurve an die gemessenen Werte (\coderef{tv1})}
+    \includegraphics[width=0.7\textwidth]{Abbildungen/Graph_TV1_1.pdf}
+    \caption{Fit der Paschen-Kurve an die gemessenen Werte.
+    Fitparameter: $A = \num{0 \pm 8 e4}$,
+    $B = \num{6 \pm 6 e4}$, $C = \num{0 \pm 9 e4}$
+    (\coderef{tv1})}
     \label{graph_tv1}
 \end{figure}
+Offensichtlich passt dieser Fit nicht zu den Messwerten.
 
-\begin{table}[H]
+Wählt man andererseits als Startwerte $A = 80$, $B = 2$ und $C = 0,7$, so
+erhält man folgenden wesentlich anderen Fit:
+\begin{figure}[H]
     \centering
-    \begin{tabular}{c||c|c}
-         Parameter & Wert & Unsicherheit  \\
-         \hline
-         $A$ & \num{5e2} & \num{4e2} \\
-         $B$ & \num{0} & \num{4e7} \\
-         $C$ & \num{0} & \num{5e6} \\
-    \end{tabular}
-    \caption{\coderef{tv1}}
-    \label{fitparameters_tv1}
-\end{table}
+    \includegraphics[width=0.7\textwidth]{Abbildungen/Graph_TV1_2.pdf}
+    \caption{Fit der Paschen-Kurve an die gemessenen Werte.
+    Fitparameter: $A = \num{0 \pm 8 e4}$,
+    $B = \num{6 \pm 6 e4}$, $C = \num{0 \pm 9 e4}$
+    (\coderef{tv1})}
+    \label{graph_tv1}
+\end{figure}
+Auch hier passt der Graph nur schlecht zu den Messwerten. Die Steigung der Messwerte
+im Bereich $[4, 10]$ ist wesentlich geringer als die der Fitkurve in diesem Bereich.
+Außerdem sind in beiden Fällen die Unsicherheiten der Parameter wesentlich
+größer als die Parameter selbst, was auf einen schlechten Fit hinweist.
 
-% TODO continue: A und B vertauschen
+Also haben wir uns für die Fitfunktion
+\[
+    f(x) \wideeq \frac{A (x - C)}{\ln(B (x - C))}
+\]
+entschieden, die im Skript erwähnt wurde und bereits in der Vorbereitung
+verwendet wurde.
+
+Hier konvergiert der Fit für die Startwerte $A = 80$, $B = 2$, $C = 0,7$
+gegen eine sinnvolle Funktion:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{Abbildungen/Graph_TV1_3.pdf}
+    \caption{Fit der Paschen-Kurve an die gemessenen Werte.
+    Fitparameter: $A = \num{74.1 \pm 2.5}$,
+    $B = \num{0.601 \pm 0.022}$, $C = \num{-0.79 \pm 0.09}$
+    (\coderef{tv1})}
+    \label{graph_tv1}
+\end{figure}
+Die Kurve passt zu den Datenpunkten und die Unsicherheiten stehen in einem sinnvollen
+Verhältnis zu den Parametern.
+
 Die Funktion $f$ hat die Ableitung
 \[
     f'(x) \wideeq \frac{
-        A (\ln(B x) - C) - A x \frac{1}{B x} \cdot B
+        \ln(B (x - C)) \cdot A - A (x - C) \frac{1}{B (x - C)} \cdot B
     }{
-        \left( \ln(B x) - C \right)^2
+        \left( \ln(B (x - C)) \right)^2
     }
-    \wideeq A \frac{\ln (B x) - C - 1}{\left( \ln(B x) - C \right)^2}
+    \wideeq A \frac{\ln(B (x - C)) - 1}{
+        \left( \ln(B (x - C)) \right)^2
+    }
 \]
-Setzt man diese gleich Null, so erhält man für die $x$-Koordinate des Minimums
+Setzt man diese gleich Null, so erhält man für die $x$-Koordinate des Minimums:
 \begin{align*}
-    A \frac{\ln (B x) - C - 1}{\left( \ln(B x) - C \right)^2} \wideeq& 0 \\
-    \ln (B x) \wideeq& C + 1 \\
-    x_0 \wideeq& \frac 1 B e^{C + 1}
+    \ln(B (x - C)) - 1 \wideeq& 0 \\
+    B (x - C) \wideeq& e \\
+    x_0 \wideeq& \frac e B + C
 \end{align*}
-Daraus ergibt sich für die $y$-Koordinate des Minimums
-\begin{align*}
-    f(x_0) \wideeq \frac{A / B e^{C + 1}}{\ln (e^{C + 1}) - C}
-    \wideeq \frac A B e^{C + 1}
-\end{align*}
-Mit diesem Ausdruck kann die minimale Zündspannung (das Paschen-Minimum) berechnet
-werden. Für unsere Fitparameter ergibt sich ein Wert von
+Einsetzen in $f$ liefert für die $y$-Koordinate des Minimums:
 \[
-    U_\text{min} \wideeq \frac A B e^{C + 1} \wideeq
-    \qty{0 \pm 1.9e9}{\volt}
+    f(x_0) \wideeq \frac{A (e / B + C - C)}{\ln( B (e / B + C - C))}
+    \wideeq \frac{A e / B}{\ln(e)} \wideeq \frac{A e}{B}
+\]
+Also gilt für die Minimale Zündspannung, d.h. das Paschen-Minimum:
+\[
+    U_\text{min} \wideeq \frac{A e}{B} \wideeq \qty{335 \pm 17}{\volt}
     \quad \coderef{tv1}
 \]
+
+Die erhaltenen Messwerte unterliegen vermutlich mehreren statistischen und
+systematischen Fehlern.
+\begin{itemize}
+    \item Varianz des Drucks. Das Druckmessgerät hatte nur eine Nachkommastelle.
+    Bei einem Druck von ca. \qty{4,0}{hPa} entspricht das einer relativen Unsicherheit
+    von \qty{2.5}{\percent}. Beim Experimentieren haben wir festgestellt, dass
+    die Zündspannung sehr sensibel vom Druck abhängt. Kleine Variationen im Druck
+    könnten also große Auswirkungen auf die gemessene Zündspannung haben.
+
+    \item Einstellen der Spannung. Bei den meisten Einstellungen für den
+    Elektrodenabstand war es nicht einfach, eine eindeutige Einstellung des
+    Spannungsreglers am Betriebsgerät zu finden, ab der eine Glimmentladung
+    statfindet. Meistens gab es einen Übergang von mindestens einigen Volt,
+    in der das akustische Signal des Betriebsgerät von still zu unterbrochenem
+    Piepsen zu durchgehendem Piepsem ging. Meist wurde hier die Spannung gewählt,
+    bei der das Piepsen ``fast'' ununterbrochen erklang.
+
+    \item Allgemeine Schwierigkeiten beim Finden der Spannung.
+    Ein Erhöhen der Spannung am Betriebsgerät bewirkt nicht immer eine
+    höhere vom Multimeter gemessene Spannung, insbesondere nicht im Bereich des
+    Einsetzens der Glimmentladung. Vermutlich liegt das daran, dass mit Einsetzen
+    der Glimmentladung ein Strom zwischen den Elektroden fließt, wodurch eine größere
+    Eingangsspannung vom Betriebsgerät nötig wäre, um die gleiche tatsächliche
+    Spannung zwischen den Elektroden zu messen. Dadurch entsteht der im Protokoll
+    beschriebene ``Parabelverlauf'' der Spannung. Von diesem Verlauf haben wir beim
+    Messen vermutlich nicht immer das Maximum getroffen. Dadurch werden die
+    einzelnen Messwerte weniger miteinander vergleichbar.
+
+    \item Staub in der Gasentladungsröhre. Bei jedem Verstellen des Abstandes
+    der Elektroden können Staub oder andere Fremdkörper in die Röhre kommen.
+    Diese beeinflussen die Zündspannung. Dieser Effekt zeigt sich vor allem daran,
+    dass die ersten von unseren drei Messungen pro Abstand meist ziemlich von den
+    anderen beiden abweicht.
+\end{itemize}
+
+% Die Funktion $f$ hat die Ableitung
+% \[
+%     f'(x) \wideeq \frac{
+%         B (\ln(A x) - C) - B x \frac{1}{A x} \cdot A
+%     }{
+%         \left( \ln(A x) - C \right)^2
+%     }
+%     \wideeq B \frac{\ln (A x) - C - 1}{\left( \ln(A x) - C \right)^2}
+% \]
+% Setzt man diese gleich Null, so erhält man für die $x$-Koordinate des Minimums
+% \begin{align*}
+%     B \frac{\ln (A x) - C - 1}{\left( \ln(A x) - C \right)^2} \wideeq& 0 \\
+%     \ln (A x) \wideeq& C + 1 \\
+%     x_0 \wideeq& \frac 1 A e^{C + 1}
+% \end{align*}
+% Daraus ergibt sich für die $y$-Koordinate des Minimums
+% \begin{align*}
+%     f(x_0) \wideeq \frac{B / A e^{C + 1}}{\ln (e^{C + 1}) - C}
+%     \wideeq \frac B A e^{C + 1}
+% \end{align*}
+% Mit diesem Ausdruck kann die minimale Zündspannung (das Paschen-Minimum) berechnet
+% werden. Für unsere Fitparameter ergibt sich ein Wert von
+% \[
+%     U_\text{min} \wideeq \frac A B e^{C + 1} \wideeq
+%     \qty{0 \pm 1.9e9}{\volt}
+%     \quad \coderef{tv1}
+% \]
 
 
 \newpage
 
 \subsection{Teilversuch 2: Oberflächenbehandlung}
 
+Es wurden bereits alle Beobachtungen und Feststellungen im Versuchsprotokoll festgehalten. Für die Vollständigkeit werden hier nochmal alle Beobachtungen und Ergebnisse zusammen mit den aufgenommenen Bilder präsentiert.
+
+Die Veränderung des Probeobjekts war unter dem richtigien Blickwinkel bereits erkennbar. Durch das Aufsetzen eines Wassertropfens wurden der Effekt des Plasmas jedoch noch sichbarer.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Abbildungen/Wassertropfen.jpeg}
+    \caption{Bildschirmfoto aus dem Programm Motic Dynamics}
+    \label{graph_tv1}
+\end{figure}
+
+Der Tropfen auf der linken Seite befindet sich auf der bearbeiteten Oberfläche und der Tropfen auf der rechten Seite ist auf der normalen Oberfläche des Metallplättchens. Mit Hilfe der Winkelfunktion des Programms konnten die jeweiligen Winkel zwischen Oberfläche des Plättchens und dem Tropfen ausgemessen werden.
+
+Wie bereits aus dem Bild ablesbar unterscheiden sich die beiden Winkel in ihrer Größe. Der Kontaktwinkel des Tropfens auf der bearbeiteten Fläche beträgt $\phi_\text{bearbeitet}=\ang{11.89}$ und der Winkel der unbearbeiteten Fläche: $\phi_\text{unbearbeitet}=\ang{48.58}$.
+
+Dies lässt sich folgend erklären: durch das Behandeln des Gegenstandes durch ein Plasma verändern sich die Oberflächeneigenschaften der behandelten Fläche. Dabei ändern sich die relativen Molekülmassen und die chemische Zusammensetzung. Durch die umgebende Luft, werden Co- und OH-Gruppen auf der Probe deponiert. Folgich verändern sich Haftfestigkeit und Benetzbarkeit. Diese beiden Aspekte sind nach der Behandlung durch ein Plasma nicht mehr so gut, wie auf der unbehandelten Fläche. Man kann das ganze also als ein Veränderung der Oberflächenspannung beschreiben. Diese ist nach der Behandlung geringer als vor der Behandlung.
+
+Das ist der Grund, weshalb der Kontaktiwinkel des linken Tropfens so viel geringer ist als der des rechten Tropfens.
 
 \newpage
 
 \subsection{Teilversuch 3: Plasmakugel}
+
+Für die Spannung am Oszilloskop, welche proportional zum gemessenen $E$-Feld
+des Tastkopfes ist, folgt einem Abstandsgesetz
+\[
+    \frac{U}{U_0} \wideeq \left( \frac{r}{r_0} \right)^n
+\]
+mit zu bestimmendem Exponenten $n$.
+Nimmt man von dieser Gleichung den Logarithmus, so erhält man
+\begin{align*}
+    \log \left( \frac{U}{U_0} \right) \wideeq& n \log \left( \frac{r}{r_0} \right)
+\end{align*}
+$n$ ist also die Steigung der Gerade, die durch die Punkte
+$\left( \log \frac{r_i}{r_0}, \log \frac{U_i}{U_0} \right)$ gebildet wird.
+Fittet man an dieser Punkte eine Gerade, so erhält man folgenden Graphen
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Abbildungen/Graph_TV3.pdf}
+    \caption{Fit einer Ausgleichsgerade an die Messpunkte auf einer logarithmischen
+    Skala (\coderef{tv3})}
+\end{figure}
+Hier ist deutlich zu erkennen, dass die Messwerte keine gleichmäßige Steigung
+aufweisen. Zunächst fällt der Graph relativ schwach ab, und mit zunehmendem
+Abstand fällt er immer stärker ab.
+Das ist durch die Geometrie des Plasmazylinders zu erklären.
+In der Nähe des Zylinders, d.h. für kleine Werte von $r$, würde theoretisch
+näherungsweise ein $1 / r$-Abfallverhalten des $E$-Feldes erwartet werden,
+weil der Zylinder für kleine $r$ als unendlich lang angenommen werden kann.
+Für große Abstände verhält sich das $E$-Feld mehr wie das Feld einer Punktladung.
+Dieses fällt mit $1 / r^2$ ab, also insbesondere stärker als das eines unendlich
+langen Zylinders.
+Diese theoretischen Erwartungen stimmen mit dem Verhalten der Messwerte überein:
+zunächst fallen sie schwach ab, mit zunehmenden Abstand immer stärker.
+
+Als mögliche Fehlerquellen beim Bestimmen des Abfallverhaltens sind
+vor allem Störfaktoren des elektrischen Feldes zu nennen. Wie bereits im
+Versuchsprotokoll beschrieben, wird die Amplitude sehr leicht von Störobjekten
+wie zum Beispiel einer Hand oder einem Heft zwischen dem Zylinder und dem Tastkopf
+beeinflusst. Dafür genügt es auch, dass sich besagte Störobjekte lediglich
+in der Nähe (und nicht komplett zwischen) des Tastkopfes / dem Plasmazylinder befinden.
+Der Einfluss der anderen Objekte im Raum (z.B. der Tisch, das Oszilloskop selbst,
+die Wände, wir als Versuchspersonen etc.) ist schwierig zu bestimmen und könnte
+die Werte abgefälscht haben.
+
+Um diese Effekte zumindest teilweise zu reduzieren, könnte man das Experiment auf folgende Weise verbessern:
+\begin{itemize}
+    \item Das Experiment in einem komplett freien Raum durchführen. Außer dem
+    Plasmazylinder sollte sich in einiger Umgebung nichts befinden.
+    \item Das $E$-Feld in alle Richtungen messen. Misst man das Feld an verschiedenen
+    Punkten mit gleichem Abstand zum Zylinder (auf gleicher Höhe, um die
+    Nicht-unendlichkeit des Zylinders zu berücksichtigen), dann würde man theoretisch
+    für jeden Messpunkt den gleichen Wert erwarten. Bildet man den Mittelwert
+    aus diesen einzelnen Messwerten, so erhält man eine bessere Abschätzung
+    für das $E$-Feld.
+\end{itemize}
+Mit diesen Verbesserungen würde man vermutlich die zwei verschiedenen
+Bereiche ($1/r$-Abfall in der Nähe des Zylinders und $1/r^2$-Abfall für große Abstände)
+deutlich besser beobachten können und die Gesetze numerisch bestätigen können.
+
+Die Plasmafäden hatten eine rötliche bzw. leicht violette Farbe.
+Würde man das gesamte Spektrum des Lichts haben, könnte man daraus genau die
+Bestandteile des Füllgases bestimmen. Hat man nur die Farbe, die mit dem Auge
+sichtbar ist, zur Verfügung geht das wesentlich ungenauer.
+Trotzdem kann vermutet werden, dass das Füllgas aus Neon und / oder Argon besteht,
+weil diese Gase in ähnlichen Farben leuchten.
 
 
 \newpage
@@ -688,9 +852,9 @@ Stellen unvollständig erscheinen. Auf GitHub wird aber alles richtig angezeigt.
 \lstinputlisting[language=Python]{Code/main.py}
 \newpage
 
-% \verb|Expressions.py|:
-% \lstinputlisting[language=Python]{Code/Expressions.py}
-% \newpage
+\verb|expressions.py|:
+\lstinputlisting[language=Python]{Code/expressions.py}
+\newpage
 
 Output:
 \lstinputlisting{Code/output.txt}
